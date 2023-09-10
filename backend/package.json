@@ -1,0 +1,76 @@
+{
+  "name": "tt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "develop": "nodemon",
+    "test": "jest",
+    "test-watch": "jest --watch",
+    "test-coverage": "jest --coverage",
+    "build": "tsc -p tsconfig.prod.json",
+    "start": "node -r ts-node/register/transpile-only -r tsconfig-paths/register ./dist/index.js",
+    "prepare": "husky install",
+    "check-format": "",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
+  },
+  "author": "",
+  "license": "ISC",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "dependencies": {
+    "@prisma/client": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "config": "^3.3.9",
+    "connect-redis": "^7.1.0",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv-safe": "^8.2.0",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.9.0",
+    "express-session": "^1.17.3",
+    "express-validator": "^7.0.1",
+    "http-errors": "^2.0.0",
+    "ioredis": "^5.3.2",
+    "jsonwebtoken": "^9.0.1",
+    "lodash": "^4.17.21",
+    "nodemailer": "^6.9.4",
+    "prisma": "^5.1.1",
+    "swagger-ui-express": "^5.0.0",
+    "winston": "^3.10.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/compression": "^1.7.2",
+    "@types/cors": "^2.8.13",
+    "@types/dotenv-safe": "^8.1.2",
+    "@types/express": "^4.17.17",
+    "@types/express-session": "^1.17.7",
+    "@types/http-errors": "^2.0.1",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/lodash": "^4.14.197",
+    "@types/nodemailer": "^6.4.9",
+    "@types/swagger-ui-express": "^4.1.3",
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.46.0",
+    "husky": "^8.0.3",
+    "jest": "^29.6.2",
+    "lint-staged": "^13.2.3",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.0.1",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.1.6"
+  },
+  "engines": {
+    "npm": ">=9.8.1",
+    "node": ">=16.6.0 <18.0.0"
+  }
+}
