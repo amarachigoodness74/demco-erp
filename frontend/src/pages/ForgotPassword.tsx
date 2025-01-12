@@ -1,115 +1,109 @@
 import React, { useState } from "react";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { useAuthContext } from "../utils/auth/AuthContext";
 import { postOrPutData } from "../utils/apiRequests";
-import { EmailInput } from "../components/FormElements";
 
-const theme = createTheme();
+const ForgotPasswordSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email").required("Email is required"),
+});
 
-export default function ForgotPassword() {
-  const [error, setError] = useState("");
-  const [response, setResponse] = useState("");
+const ForgotPassword: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { setAuthToken, setCurrentUser } = useAuthContext();
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const email = data.get("email");
+  const [error, setError] = useState("null");
+
+  const from = location.state?.from?.pathname || "/dashboard";
+
+  const initialValues = {
+    email: "",
+  };
+
+  const handleSubmit = async (values: { email: string }) => {
+    const { email } = values;
+
     if (email === "") {
-      setResponse("");
       setError("Please fill in all fields");
     } else {
       try {
-        const userJson = await postOrPutData(
-          "auth/forgot-password",
-          { email },
-          "POST"
-        );
+        const userJson = await postOrPutData("auth/login", { email }, "POST");
         if (userJson.status === "error") {
-          setResponse("");
-          Array.isArray(userJson.errors || userJson.error)
-            ? setError(userJson.errors[0].msg || userJson.error[0].msg)
-            : setError(userJson.errors || userJson.error);
+          setError(
+            Array.isArray(userJson.errors || userJson.error)
+              ? userJson.errors[0].msg || userJson.error[0].msg
+              : userJson.errors || userJson.error
+          );
         } else {
-          setError("");
-          setResponse("Please check your mail for further details");
+          setAuthToken(userJson.token);
+          setCurrentUser(userJson.payload);
+          navigate(from, { replace: true });
         }
-      } catch (error: any) {
+      } catch (error) {
         console.log("error", error);
       }
     }
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
+    <div className="min-h-screen flex items-center justify-center bg-purple-100">
+      <div className="max-w-md w-full p-8 bg-white rounded-md shadow-md">
+        <h2 className="text-2xl mb-4 text-center font-bold text-purple-600">
+          Forgot Password
+        </h2>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={ForgotPasswordSchema}
+          onSubmit={handleSubmit}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Forgot Password
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
-            <EmailInput
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              type="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Typography
-                  variant="subtitle2"
-                  component="p"
-                  color={error ? "error" : "success"}
+          {({ errors, touched, isSubmitting }) => (
+            <Form className="space-y-4">
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
                 >
-                  {error || response}
-                </Typography>
-              </Grid>
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Submit
-            </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link href="/" variant="body2">
-                  Remember password? Sign in
-                </Link>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-      </Container>
-    </ThemeProvider>
+                  Email Address
+                </label>
+                <Field
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  className={`mt-1 block w-full px-3 py-2 border ${
+                    errors.email && touched.email
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm`}
+                />
+                <ErrorMessage
+                  name="email"
+                  component="p"
+                  className="mt-1 text-red-500 text-sm"
+                />
+              </div>
+              {error && (
+                <div className="text-center font-bold mt-1 text-red-500 text-sm">
+                  <p>{error}</p>
+                </div>
+              )}
+              <div>
+                <button
+                  type="submit"
+                  className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                  disabled={isSubmitting}
+                >
+                  Forgot Password
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </div>
+    </div>
   );
-}
+};
+
+export default ForgotPassword;

@@ -1,30 +1,33 @@
-import Container from "@mui/material/Container";
-import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+const FatalErrorPage: React.FC = () => {
+  const navigate = useNavigate();
 
-export default function FatalErrorPage() {
-  <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
-    <Paper
-      variant="outlined"
-      sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-    >
-      <ErrorOutlineIcon />
-      <Typography component="h1" variant="h4" align="center">
-        Sorry, there was an unexpected error!
-      </Typography>
-      <Button variant="contained" href="mailto:amarachigoodness74@gmail.com">
-        Report
-      </Button>
-      <Button
-        variant="contained"
-        color="success"
-        onClick={() => window.location.reload()}
-      >
-        Refresh the page
-      </Button>
-    </Paper>
-  </Container>;
-}
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 text-center p-4">
+      <h1 className="text-4xl font-bold text-red-600 mb-4">
+        Oops! Something went wrong.
+      </h1>
+      <p className="text-lg text-gray-700 mb-6">
+        We encountered an unexpected error. Please try again later.
+      </p>
+      <div className="space-x-4">
+        <button
+          onClick={() => window.location.reload()}
+          className="py-2 px-4 bg-purple-600 text-white rounded-md shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        >
+          Reload Page
+        </button>
+        <button
+          onClick={() => navigate("/")}
+          className="py-2 px-4 bg-gray-800 text-white rounded-md shadow-md hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500"
+        >
+          Go to Home
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default FatalErrorPage;

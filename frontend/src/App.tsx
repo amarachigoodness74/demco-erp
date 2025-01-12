@@ -1,8 +1,11 @@
 import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
-import RequireAuth from "./utils/auth/RequireAuth";
 import LoadingIndicator from "./components/Loaders/Circular";
 import reloadOnFail from "./utils/reloadOnFail";
+import SupplierForm from "./components/Inventory/Suppliers/SupplierForm";
+import PurchaseOrderForm from "./components/Inventory/PurchaseOrders/PurchaseOrderForm";
+import ProductForm from "./components/Inventory/Products/ProductForm";
+// import RequireAuth from "./utils/auth/RequireAuth";
 
 const SignInPage = lazy(() => reloadOnFail(() => import("./pages/Signin")));
 const ForgotPasswordPage = lazy(() =>
@@ -11,19 +14,23 @@ const ForgotPasswordPage = lazy(() =>
 const ResetPasswordPage = lazy(() =>
   reloadOnFail(() => import("./pages/ResetPassword"))
 );
-const Dashboard = lazy(() =>
-  reloadOnFail(() => import("./components/Dashboard"))
+
+const Dashboard = lazy(() => reloadOnFail(() => import("./pages/Dashboard")));
+const ProductList = lazy(() =>
+  reloadOnFail(() => import("./components/Inventory/Products/ProductList"))
 );
-const Employees = lazy(() =>
-  reloadOnFail(() => import("./components/Employees"))
+const SupplierList = lazy(() =>
+  reloadOnFail(() => import("./components/Inventory/Suppliers/SupplierList"))
 );
-const Clients = lazy(() => reloadOnFail(() => import("./components/Clients")));
-const Jobs = lazy(() => reloadOnFail(() => import("./components/Jobs")));
-const Accounts = lazy(() =>
-  reloadOnFail(() => import("./components/Accounts"))
+const PurchaseOrderList = lazy(() =>
+  reloadOnFail(
+    () => import("./components/Inventory/PurchaseOrders/PurchaseOrderList")
+  )
 );
 
-export default function App() {
+// import reactLogo from "./assets/react.svg";
+
+const App = () => {
   return (
     <React.StrictMode>
       <Suspense fallback={<LoadingIndicator />}>
@@ -37,44 +44,26 @@ export default function App() {
         <Route
           path="/dashboard"
           element={
-            <RequireAuth>
-              <Dashboard />
-            </RequireAuth>
+            // <RequireAuth>
+            <Dashboard />
+            // </RequireAuth>
           }
         />
+        <Route path="/inventory/products" element={<ProductList />} />
+        <Route path="/inventory/products/add" element={<ProductForm />} />
+        <Route path="/inventory/suppliers" element={<SupplierList />} />
+        <Route path="/inventory/suppliers/add" element={<SupplierForm />} />
         <Route
-          path="/employees"
-          element={
-            <RequireAuth>
-              <Employees />
-            </RequireAuth>
-          }
+          path="/inventory/purchase-orders"
+          element={<PurchaseOrderList />}
         />
         <Route
-          path="/clients"
-          element={
-            <RequireAuth>
-              <Clients />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/jobs"
-          element={
-            <RequireAuth>
-              <Jobs />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/accounts"
-          element={
-            <RequireAuth>
-              <Accounts />
-            </RequireAuth>
-          }
+          path="/inventory/purchase-orders/add"
+          element={<PurchaseOrderForm />}
         />
       </Routes>
     </React.StrictMode>
   );
-}
+};
+
+export default App;

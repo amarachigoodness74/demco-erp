@@ -1,14 +1,23 @@
 import React from "react";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
 
-export default function CircularIndeterminate() {
+type CircularLoaderProps = {
+  size?: string;
+  color?: string;
+};
+
+const CircularLoader: React.FC<CircularLoaderProps> = ({
+  size = "w-12 h-12",
+  color = "text-purple-500",
+}) => {
   return (
-    <Grid container direction="column" justifyContent="center" alignItems="center" style={{height: '100vh'}}>
-      <Box>
-        <CircularProgress />
-      </Box>
-    </Grid>
+    <div className={`flex items-center justify-center`}>
+      <div
+        className={`${size} border-4 border-t-transparent ${color} rounded-full animate-spin`}
+        role="status"
+        aria-label="Loading"
+      ></div>
+    </div>
   );
-}
+};
+
+export default CircularLoader;

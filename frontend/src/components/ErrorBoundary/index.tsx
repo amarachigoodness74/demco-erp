@@ -1,51 +1,34 @@
-import React from 'react';
-
-import FatalErrorPage from './FatalErrorPage';
+import React, { Component, ReactNode } from "react";
+import ErrorPage from "./FatalErrorPage";
 
 interface ErrorBoundaryProps {
-  children: React.ReactNode;
-  component: React.ReactNode;
+  children: ReactNode;
 }
 
 interface ErrorBoundaryState {
-  error: Error | null;
+  hasError: boolean;
 }
 
-class ErrorBoundary extends React.Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
-  static defaultProps;
-
-  constructor(props) {
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
     super(props);
-
-    this.state = {
-      error: null
-    };
+    this.state = { hasError: false };
   }
 
-  componentDidCatch(error, errorInfo) {
-    // Catch errors in any child components and re-renders with an error message
-    this.setState({
-      error
-    });
+  static getDerivedStateFromError(_: Error): ErrorBoundaryState {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error("ErrorBoundary caught an error:", error, errorInfo);
   }
 
   render() {
-    const { error } = this.state;
-    const { children, component } = this.props;
-
-    if (error) {
-      return component;
+    if (this.state.hasError) {
+      return <ErrorPage />;
     }
-
-    return children;
+    return this.props.children;
   }
 }
-
-ErrorBoundary.defaultProps = {
-  component: <FatalErrorPage />
-};
 
 export default ErrorBoundary;

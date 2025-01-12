@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
 
-import { AuthContext } from './AuthContext';
-import { Navigate } from 'react-router-dom';
+import { AuthContext } from "./AuthContext";
 
-const TOKEN_NAME = 'demco-token';
+const TOKEN_NAME = "demco-token";
 
 function storageSetAuthToken(token: string) {
   localStorage.setItem(TOKEN_NAME, token);
@@ -11,11 +11,11 @@ function storageSetAuthToken(token: string) {
 
 function storageGetAuthToken() {
   const token = localStorage.getItem(TOKEN_NAME);
-  return token || '';
+  return token || null;
 }
 
 function storageDeleteAuthToken() {
-  localStorage.clear();
+  localStorage.removeItem(TOKEN_NAME);
 }
 
 export function AuthProvider({ children }) {
@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
   const handleLogout = useCallback(() => {
     storageDeleteAuthToken();
     sessionStorage.clear();
-    setAuthToken('');
+    setAuthToken(null);
   }, []);
 
   // Sync authentication token between different tabs
@@ -37,8 +37,8 @@ export function AuthProvider({ children }) {
 
       // The authentication token is gone
       if (!currentToken && authToken) {
-        storageSetAuthToken('');
-        setAuthToken('');
+        storageSetAuthToken("");
+        setAuthToken("");
         return;
       }
 
@@ -47,12 +47,12 @@ export function AuthProvider({ children }) {
         window.location.reload();
       }
     };
-    window.addEventListener('storage', handleStorage);
-    document.addEventListener('AuthenticationRequiredError', handleLogout);
+    window.addEventListener("storage", handleStorage);
+    document.addEventListener("AuthenticationRequiredError", handleLogout);
 
     return () => {
-      window.removeEventListener('storage', handleStorage);
-      document.removeEventListener('AuthenticationRequiredError', handleLogout);
+      window.removeEventListener("storage", handleStorage);
+      document.removeEventListener("AuthenticationRequiredError", handleLogout);
     };
   }, [authToken, handleLogout]);
 
@@ -63,7 +63,7 @@ export function AuthProvider({ children }) {
       setAuthToken(token);
     },
     getAuthToken: () => {
-      return new Promise<string>(resolve => {
+      return new Promise<string>((resolve) => {
         const token = storageGetAuthToken() as string;
         resolve(token);
       });
@@ -72,7 +72,7 @@ export function AuthProvider({ children }) {
       setUser(user);
     },
     getCurrentUser: () => {
-      return new Promise<{}>(resolve => {
+      return new Promise<{}>((resolve) => {
         resolve(user);
       });
     },
@@ -81,9 +81,9 @@ export function AuthProvider({ children }) {
     },
     signout() {
       handleLogout();
-      storageSetAuthToken('');
-      setAuthToken('');
-      this.redirectLogin('/');
+      storageSetAuthToken("");
+      setAuthToken("");
+      this.redirectLogin("/");
     },
   };
 
